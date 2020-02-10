@@ -7,19 +7,19 @@ node{
             branch: 'master'
     }
     stage('Docker - Build & Push'){
-        sh script: "docker build . -t kammana/node-app:${dockerTag} "
+        sh script: "docker build . -t scmmohammad/node-app:${dockerTag} "
         
         withCredentials([string(credentialsId: 'docker-hub', variable: 'dockerHubPwd')]) {
-            sh script: "docker login -u kammana -p ${dockerHubPwd}"
+            sh script: "docker login -u scmmohammad -p ${dockerHubPwd}"
         }
         
-        sh script: "docker push kammana/node-app:${dockerTag}"
+        sh script: "docker push scmmohammad/node-app:${dockerTag}"
     }
 	
 	stage('Dev Deploy'){
 		sh returnStatus: true, script: "ssh ec2-user@${devIp} docker rm -f nodeapp"
-		sh returnStatus: true, script: 'ssh ec2-user@${devIp} docker rmi $(docker images | grep kammana/node-app | awk \'{print $3}\')'
-	    sh "ssh ec2-user@${devIp} docker run -d -p 8080:8080 --name=nodeapp kammana/node-app:${dockerTag}"	
+		sh returnStatus: true, script: 'ssh ec2-user@${devIp} docker rmi $(docker images | grep scmmohammad/node-app | awk \'{print $3}\')'
+	    sh "ssh ec2-user@${devIp} docker run -d -p 8080:8080 --name=nodeapp scmmohammad/node-app:${dockerTag}"	
 	}
 }
 
